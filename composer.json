@@ -1,6 +1,6 @@
 {
   "name": "cspray/marked-logs",
-  "description": "A PSR-11 Logger that will ensure all logs have their context marked with an identifier.",
+  "description": "A PSR-3 Logger that will ensure all logs have their context marked with an identifier.",
   "keywords": ["logger"],
   "license": ["MIT"],
   "require": {

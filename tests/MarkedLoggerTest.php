@@ -14,7 +14,7 @@ use Psr\Log\LogLevel;
 #[CoversClass(MarkedLogger::class)]
 class MarkedLoggerTest extends TestCase {
 
-    public function logMethodsProvider() : array {
+    public static function logMethodsProvider() : array {
         return [
             'emergency' => [Level::Emergency, 'emergency'],
             'alert' => [Level::Alert, 'alert'],

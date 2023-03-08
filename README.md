@@ -1,6 +1,6 @@
 # Marked Logs
 
-Provides a PSR-11 Logger decorator that ensures every logged message is marked with an identifier to easily group similar log messages and find the logs you're looking for.
+Provides a PSR-3 Logger decorator that ensures every logged message is marked with an identifier to easily group similar log messages and find the logs you're looking for.
 
 ## Installation
 

@@ -81,4 +81,38 @@ class MarkedLoggerTest extends TestCase {
         self::assertSame(['my-context-key' => 'known-val', 'marker' => [StubMarker::class, FooMarker::class]], $records[0]->context);
     }
 
+    public function testMarkerToStringRespected() : void {
+        $subject = new MarkedLogger(
+            new CustomToStringMarker(),
+            new Logger('marked-logs.test', [$testHandler = new TestHandler()])
+        );
+        $subject->info('My log message');
+
+        $records = $testHandler->getRecords();
+
+        self::assertCount(1, $records);
+        self::assertSame(Level::Info, $records[0]->level);
+        self::assertSame('My log message', $records[0]->message);
+        self::assertSame(['marker' => ['MyCustomMarker']], $records[0]->context);
+    }
+
+    public function testCompositeMarkerToStringRespected() : void {
+
+        $subject = new MarkedLogger(
+            new CompositeMarker(
+                new CustomToStringMarker(),
+                new StubMarker()
+            ),
+            new Logger('marked-logs.test', [$testHandler = new TestHandler()])
+        );
+        $subject->info('My log message');
+
+        $records = $testHandler->getRecords();
+
+        self::assertCount(1, $records);
+        self::assertSame(Level::Info, $records[0]->level);
+        self::assertSame('My log message', $records[0]->message);
+        self::assertSame(['marker' => ['MyCustomMarker', StubMarker::class]], $records[0]->context);
+    }
+
 }

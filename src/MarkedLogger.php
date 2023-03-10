@@ -61,10 +61,10 @@ final class MarkedLogger implements LoggerInterface {
     private function getMarker() : array {
         $markers = [];
         if ($this->marker instanceof Marker) {
-            $markers[] = $this->marker::class;
+            $markers[] = $this->marker->toString();
         } else {
             foreach ($this->marker->getMarkers() as $marker) {
-                $markers[] = $marker::class;
+                $markers[] = $marker->toString();
             }
         }
         return $markers;

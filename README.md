@@ -19,13 +19,13 @@ Imagine a scenario where you're interacting with a RESTful API and you want to m
 
 namespace Acme\MarkedLogsDemo;
 
-use Cspray\MarkedLogs\Marker;
+use Cspray\MarkedLogs\SelfDescribingMarker;
 use Cspray\MarkedLogs\MarkedLogger;
 use Psr\Log\LoggerInterface;
 use Psr\Http\Client\ClientInterface;
 
 // Make sure you make this a meaningful name! It will be what shows up as the marker in your logs
-class RestfulApiMarker implements Marker {}
+class RestfulApiMarker extends SelfDescribingMarker {}
 
 class WidgetService {
 
@@ -80,9 +80,9 @@ $service->remove($widget);
 // record 2: "Removing widget with id 1234", ['id' => '1234', 'marker' => ['Acme\MarkedLogsDemo\RestfulApiMarker']]
 ```
 
-Now you can see all the logs for interacting with the RESTful API by searching for the provided Marker in your logs aggregator!
+Now you can see all the logs for interacting with the RESTful API by searching for the provided Marker in your log aggregator!
 
-## Multiple Markers
+### Multiple Markers
 
 The `RestfulApiMarker` introduced above has proven useful and other endpoints besides widgets are starting to use it. This 
 is beneficial if you want to know the overall picture of API use, but kind of noisy if you just care about Widgets. Multiple 
@@ -94,12 +94,14 @@ Keeping the same Marker we had above, we're gonna add one more and update the ar
 
 namespace Acme\MarkedLogsDemo;
 
-use Cspray\MarkedLogs\CompositeMarker;use Cspray\MarkedLogs\Marker;
+use Cspray\MarkedLogs\CompositeMarker;
+use Cspray\MarkedLogs\Marker;
 use Cspray\MarkedLogs\MarkedLogger;
+use Cspray\MarkedLogs\SelfDescribingMarker;
 use Psr\Log\LoggerInterface;
 use Psr\Http\Client\ClientInterface;
 
-class RestfulApiMarker implements Marker {}
+class RestfulApiMarker extends SelfDescribingMarker {}
 
 class WidgetApiMarker implements Marker {}
 
@@ -112,7 +114,13 @@ class WidgetService {
         LoggerInterface $logger
     ) {
         // Here's the part where you actually interact with Marked Logs!
-        $this->logger = new MarkedLogger(new CompositeMarker(new RestfulApiMarker(), new WidgetApiMarker()), $logger);
+        $this->logger = new MarkedLogger(
+            new CompositeMarker(
+                new RestfulApiMarker(), 
+                new WidgetApiMarker()
+            ), 
+            $logger
+        );
     }
     
     # rest of class as it appears above...

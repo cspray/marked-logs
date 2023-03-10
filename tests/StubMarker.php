@@ -3,5 +3,6 @@
 namespace Cspray\MarkedLogs\Test;
 
 use Cspray\MarkedLogs\Marker;
+use Cspray\MarkedLogs\SelfDescribingMarker;
 
-final class StubMarker implements Marker {}
+final class StubMarker extends SelfDescribingMarker {}

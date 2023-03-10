@@ -4,4 +4,4 @@ namespace Cspray\MarkedLogs\Test;
 
 use Cspray\MarkedLogs\Marker;
 
-final class StubMarker implements Marker {}
+final class FooMarker implements Marker {}

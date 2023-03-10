@@ -2,4 +2,8 @@
 
 namespace Cspray\MarkedLogs;
 
-interface Marker {}
+interface Marker {
+
+    public function toString() : string;
+
+}

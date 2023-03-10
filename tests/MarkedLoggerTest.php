@@ -2,6 +2,7 @@
 
 namespace Cspray\MarkedLogs\Test;
 
+use Cspray\MarkedLogs\CompositeMarker;
 use Cspray\MarkedLogs\MarkedLogger;
 use Monolog\Handler\TestHandler;
 use Monolog\Level;
@@ -41,7 +42,7 @@ class MarkedLoggerTest extends TestCase {
         self::assertCount(1, $records);
         self::assertSame($level, $records[0]->level);
         self::assertSame('My known log message', $records[0]->message);
-        self::assertSame(['my-context-key' => 'known-val', 'marker' => StubMarker::class], $records[0]->context);
+        self::assertSame(['my-context-key' => 'known-val', 'marker' => [StubMarker::class]], $records[0]->context);
     }
 
     #[DataProvider('logMethodsProvider')]
@@ -58,7 +59,26 @@ class MarkedLoggerTest extends TestCase {
         self::assertCount(1, $records);
         self::assertSame($level, $records[0]->level);
         self::assertSame('My known log message', $records[0]->message);
-        self::assertSame(['my-context-key' => 'known-val', 'MY-marker-key' => StubMarker::class], $records[0]->context);
+        self::assertSame(['my-context-key' => 'known-val', 'MY-marker-key' => [StubMarker::class]], $records[0]->context);
+    }
+
+    #[DataProvider('logMethodsProvider')]
+    public function testCompositeMarkerHasAllMarkersIncluded(Level $level, string $method, array $args = []) : void {
+        $subject = new MarkedLogger(
+            new CompositeMarker(
+                new StubMarker(),
+                new FooMarker()
+            ),
+            new Logger('marked-logs.test', [$testHandler = new TestHandler()])
+        );
+        $subject->$method(...[...$args, 'My known log message', ['my-context-key' => 'known-val']]);
+
+        $records = $testHandler->getRecords();
+
+        self::assertCount(1, $records);
+        self::assertSame($level, $records[0]->level);
+        self::assertSame('My known log message', $records[0]->message);
+        self::assertSame(['my-context-key' => 'known-val', 'marker' => [StubMarker::class, FooMarker::class]], $records[0]->context);
     }
 
 }
